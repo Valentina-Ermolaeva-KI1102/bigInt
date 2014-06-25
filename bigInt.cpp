@@ -7,7 +7,7 @@ void BinaryWrite(bigInt *integer, char *FName)
 	std::ofstream out(FName, std::ios::out | std::ios::binary);
 	if(!out.good())
 	{
-		std::cout<<"Error create file.\n";
+		throw std::invalid_argument("Error create file.\n");
 		return;
 	}
 	if(!integer->size)
@@ -29,7 +29,7 @@ void TextWrite(bigInt *integer, char *FName)
 	std::ofstream out(FName, std::ios::out);
 	if(!out.good())
 	{
-		std::cout<<"Error create file.\n";
+		throw std::invalid_argument("Error create file.\n");
 		return;
 	}
 	if(!integer->size)
@@ -50,36 +50,20 @@ void TextWrite(bigInt *integer, char *FName)
 
 int atoi(char ch)//Из символа в число
 {
-	if(ch == '0') return 0;
-	if(ch == '1') return 1;
-	if(ch == '2') return 2;
-	if(ch == '3') return 3;
-	if(ch == '4') return 4;
-	if(ch == '5') return 5;
-	if(ch == '6') return 6;
-	if(ch == '7') return 7;
-	if(ch == '8') return 8;
-	if(ch == '9') return 9;
+	int rez =  ch - '0';
+	if(rez >= 0 && rez <= 9)
+		return rez;
 	return -1;
 } 
 
 char itoa(int i)//из цифры в символ
 {
-	if(i<0) i = -i;
-	switch(i)
-	{
-	case 0: return '0';
-	case 1: return '1';
-	case 2: return '2';
-	case 3: return '3';
-	case 4: return '4';
-	case 5: return '5';
-	case 6: return '6';
-	case 7: return '7';
-	case 8: return '8';
-	case 9: return '9';
-	default: return 0;
-	}
+	if(i < 0)
+		i = -i;
+	char buf = '0' + i;
+	if(buf >= '0' && buf <= '9')
+		return buf;
+	return 0;
 }
 
 char* shiftRight(char *integer, int p)//сдвиг строки на 1 разряд в право
@@ -139,7 +123,7 @@ bigInt::bigInt(char *integer)
 		i++;
 	else if(!isdigit(integer[0]))
 	{
-		std::cout<<"error in input string!\n";
+		throw std::invalid_argument("Error in input string.\n");
 		return;
 	}
 	int j = i;
@@ -150,7 +134,7 @@ bigInt::bigInt(char *integer)
 	{
 		if(!isdigit(integer[i]))
 		{
-			std::cout<<"error in input string!\n";
+			throw std::invalid_argument("Error in input string.\n");
 			return;
 		}
 		size++;
@@ -199,7 +183,7 @@ bigInt::bigInt(char *FName, bool Binary)
 		std::ifstream in(FName, std::ios::in);
 		if(!in.good())
 		{
-			std::cout<<"Error open file.\n";
+			throw std::invalid_argument("Error open file.\n");
 			return;
 		}
 		in.seekg(0, std::ios::end);
@@ -208,7 +192,7 @@ bigInt::bigInt(char *FName, bool Binary)
 		in>>buf;
 		if(buf == -52)
 		{
-			std::cout<<"Error: Empty file.\n";
+			throw std::invalid_argument("Error: Empty file.\n");
 			return;
 		}
 		else if(buf == '-')
@@ -224,7 +208,7 @@ bigInt::bigInt(char *FName, bool Binary)
 		}
 		else if(!isdigit(buf))
 		{
-			std::cout<<"error in input file!\n";
+			throw std::invalid_argument("Error in input file.\n");
 			return;
 		}
 		int i = 0;
@@ -240,7 +224,7 @@ bigInt::bigInt(char *FName, bool Binary)
 			{
 				if(!isdigit(buf))
 				{
-					std::cout<<"error in input string!\n";
+					throw std::invalid_argument("Error in input string.\n");
 					free(Integer);
 					size = 0;
 					Sign = false;
@@ -260,7 +244,7 @@ bigInt::bigInt(char *FName, bool Binary)
 		std::ifstream in(FName, std::ios::in | std::ios::binary);	
 		if(!in.good())
 		{
-			std::cout<<"Error open file.\n";
+			throw std::invalid_argument("Error open file.\n");
 			return;
 		}
 		in.seekg(0, std::ios::end);
@@ -280,7 +264,7 @@ bigInt::bigInt(char *FName, bool Binary)
 		}
 		else if(!isdigit(buf))
 		{
-			std::cout<<"error in input file!\n";
+			throw std::invalid_argument("Error in input file.\n");
 			return;
 		}
 		int i = 0;
@@ -296,7 +280,7 @@ bigInt::bigInt(char *FName, bool Binary)
 			{
 				if(!isdigit(buf))
 				{
-					std::cout<<"error in input string!\n";
+					throw std::invalid_argument("Error in input string.\n");
 					return;
 				}
 				Integer[i] = buf;
@@ -336,7 +320,7 @@ void bigInt::Update(char* integer)
 		i++;
 	else if(!isdigit(integer[0]))
 	{
-		std::cout<<"error in input string!\n";
+		throw std::invalid_argument("Error in input string.\n");
 		return;
 	}
 	int j = i;
@@ -347,7 +331,7 @@ void bigInt::Update(char* integer)
 	{
 		if(!isdigit(integer[i]))
 		{
-			std::cout<<"error in input string!\n";
+			throw std::invalid_argument("Error in input string.\n");
 			return;
 		}
 		size++;
@@ -367,12 +351,17 @@ bigInt* bigInt::BinaryRead(char *FName)
 	std::ifstream in(FName, std::ios::in | std::ios::binary);
 	if(!in.good())
 	{
-		std::cout<<"Error open file.\n";
+		throw std::invalid_argument("Error open file.\n");
 		return NULL;
 	}
 	in.seekg(0, std::ios::end);
 	size = in.tellg();
 	in.seekg(0, std::ios::beg);
+	if(!size)
+	{
+		throw std::invalid_argument("Error empty open file.\n");
+		return NULL;
+	}
 	in>>buf;
 	if(buf == '-')
 	{
@@ -390,7 +379,7 @@ bigInt* bigInt::BinaryRead(char *FName)
 		Sign = false;
 	else
 	{
-		std::cout<<"error in input file!\n";
+		throw std::invalid_argument("Error in input file.\n");
 		return NULL;
 	}
 	int i = 0;
@@ -405,7 +394,7 @@ bigInt* bigInt::BinaryRead(char *FName)
 	{
 		if(!isdigit(buf))
 		{
-			std::cout<<"error in input string!\n";
+			throw std::invalid_argument("Error in input string.\n");
 			free(Integer);
 			Integer = NULL;
 			return NULL;
@@ -425,12 +414,17 @@ bigInt* bigInt::TextRead(char *FName)
 	std::ifstream in(FName, std::ios::in);
 	if(!in.good())
 	{
-		std::cout<<"Error open file.\n";
+		throw std::invalid_argument("Error open file.\n");
 		return NULL;
 	}
 	in.seekg(0, std::ios::end);
 	size = in.tellg();
 	in.seekg(0, std::ios::beg);
+	if(!size)
+	{
+		throw std::invalid_argument("Error empty open file.\n");
+		return NULL;
+	}
 	in>>buf;
 	if(buf == '-')
 	{
@@ -448,7 +442,7 @@ bigInt* bigInt::TextRead(char *FName)
 		Sign = false;
 	else
 	{
-		std::cout<<"error in input file!\n";
+		throw std::invalid_argument("Error in input file.\n");
 		return NULL;
 	}
 	int i = 0;
@@ -463,7 +457,7 @@ bigInt* bigInt::TextRead(char *FName)
 	{
 		if(!isdigit(buf))
 		{
-			std::cout<<"error in input string!\n";
+			throw std::invalid_argument("Error in input string.\n");
 			return NULL;
 		}
 		Integer[i] = buf;
@@ -480,7 +474,7 @@ void bigInt::BinaryWrite(char *FName)
 	std::ofstream out(FName, std::ios::out | std::ios::binary);
 	if(!out.good())
 	{
-		std::cout<<"Error create file.\n";
+		throw std::invalid_argument("Error create file.\n");
 		return;
 	}
 	if(Sign)
@@ -498,7 +492,7 @@ void bigInt::TextWrite(char *FName)
 	std::ofstream out(FName, std::ios::out);
 	if(!out.good())
 	{
-		std::cout<<"Error create file.\n";
+		throw std::invalid_argument("Error create file.\n");
 		return;
 	}
 	if(Sign)
@@ -554,275 +548,191 @@ bigInt* bigInt::Summary(bigInt* integer)
 	new_Integer[new_size] = 0;
 	if(Sign == integer->Sign)
 	{
+		int rez, i, j, k, CF=0, A, B;
 		if(great == 1)
 		{
-			int rez, i, j, k, CF=0;
-			for(i = integer->size - 1, j = size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
-			{
-				int A = atoi(Integer[j]);
-				int B = atoi(integer->Integer[i]);
-				rez = A + B + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			for(; j >= 0; j--, k--)
-			{
-				int A = atoi(Integer[j]);
-				rez = A + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			new_int = new bigInt(new_Integer + i);
-			free(new_Integer);
-			return new_int;
+			i = integer->size - 1;
+			j = size - 1;
 		}
 		else
 		{
-			int rez, i, j, k, CF = 0;
-			for(i = size - 1, j = integer->size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
-			{
-				int A = atoi(integer->Integer[j]);
-				int B = atoi(Integer[i]);
-				rez = A + B + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			for(; j >= 0; j--, k--)
-			{
-				int A = atoi(integer->Integer[j]);
-				rez = A + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			new_int = new bigInt(new_Integer + i);
-			free(new_Integer);
-			return new_int;
+			j = integer->size - 1;
+			i = size - 1;
 		}
+		for(k = new_size - 1; i >= 0; i--, j--, k--)
+		{
+			if(great == 1) 
+			{
+				A = atoi(Integer[j]);
+				B = atoi(integer->Integer[i]);
+			}
+			else
+			{
+				A = atoi(integer->Integer[j]);
+				B = atoi(Integer[i]);
+			}
+			rez = A + B + CF;
+			CF = rez / 10;
+			new_Integer[k] = itoa(rez%10);
+		}
+		for(; j >= 0; j--, k--)
+		{
+			if(great == 1)	A = atoi(Integer[j]);
+			else A = atoi(integer->Integer[j]);
+			rez = A + CF;
+			CF = rez / 10;
+			new_Integer[k] = itoa(rez%10);
+		}
+		if(CF)
+			new_Integer[k--] = '1';
+		if(Sign)
+			new_Integer[k--] = '-';
+		i = 0;
+		while(new_Integer[i] == -51)
+			i++;
+		new_int = new bigInt(new_Integer + i);
+		free(new_Integer);
+		return new_int;
 	}
 	if(!Sign)//+(1)-(2) 1 - this
 	{
+		int rez, i, j, k, CF = 0, CFbuf, A, B;
 		if(great == 1)
 		{
-			int rez, i, j, k, CF = 0, CFbuf;
-			for(i = integer->size - 1, j = size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
+			i = integer->size - 1;
+			j = size - 1;
+		}
+		else
+		{
+			j = integer->size - 1;
+			i = size - 1;
+		}
+		for(k = new_size - 1; i >= 0; i--, j--, k--)
+		{
+			if(great == 1)
 			{
-				int A = atoi(Integer[j]);
-				int B = atoi(integer->Integer[i]);
-				CFbuf = 0;
-				if (A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				A = atoi(Integer[j]);
+				B = atoi(integer->Integer[i]);
 			}
-			for(; j >= 0; j--, k--)
+			else
 			{
-				int A = atoi(Integer[j]);
-				CFbuf = 0;
-				rez = A;
-				if(rez < CF)
+				A = atoi(integer->Integer[j]);
+				B = atoi(Integer[i]);
+			}
+			CFbuf = 0;
+			if (A < B)
+			{
+				A += 10;
+				CFbuf++;
+			}
+			rez = A - B;
+			if(CF)
+			{
+				if(!rez)
 				{
 					rez += 10;
 					CFbuf++;
 				}
 				rez -= CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
 			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			new_int = new bigInt(new_Integer + i);
-			free(new_Integer);
-			return new_int;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
-		else
+		for(; j >= 0; j--, k--)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = size - 1, j = integer->size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
+			if(great == 1)	A = atoi(Integer[j]);
+			else A = atoi(integer->Integer[j]);
+			CFbuf = 0;
+			rez = A;
+			if(rez < CF)
 			{
-				int A = atoi(integer->Integer[j]);
-				int B = atoi(Integer[i]);
-				CFbuf = 0;
-				if(A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				rez += 10;
+				CFbuf++;
 			}
-			for(; j >= 0; j--, k--)
-			{
-				int A = atoi(integer->Integer[j]);
-				CFbuf = 0;
-				rez = A;
-				if(rez < CF)
-				{
-					rez +=10;
-					CFbuf++;
-				}
-				rez -= CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			new_int = new bigInt(new_Integer + i);
-			free(new_Integer);
-			return new_int;
+			rez -= CF;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
+		if(CF)
+			new_Integer[k--] = '1';
+		if(new_Sign)
+			new_Integer[k--] = '-';
+					i = 0;
+		while(new_Integer[i] == -51)
+			i++;
+		new_int = new bigInt(new_Integer + i);
+		free(new_Integer);
+		return new_int;
 	}
 	else//+(2)-(1) 1 - this
 	{
+		int rez, CFbuf, i, j, k, CF = 0, A, B;
 		if(great == 2)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = integer->size - 1, j = size - 1, k = new_size - 1; j >= 0; i--, j--, k--)
+			i = integer->size - 1;
+			j = size - 1;
+		}
+		else
+		{
+			j = integer->size - 1;
+			i = size - 1;
+		}
+		for(k = new_size - 1; j >= 0; i--, j--, k--)
+		{
+			if(great == 2)
 			{
-				int A = atoi(integer->Integer[i]);
-				int B = atoi(Integer[j]);
-				CFbuf = 0;
-				if(A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				A = atoi(integer->Integer[i]);
+				B = atoi(Integer[j]);
 			}
-			for(; i >= 0; i--, k--)
+			else
 			{
-				int A = atoi(integer->Integer[i]);
-				CFbuf = 0;
-				rez = A;
-				if(rez < CF)
+				A = atoi(Integer[i]);
+				B = atoi(integer->Integer[j]);
+			}
+			CFbuf = 0;
+			if(A < B)
+			{
+				A += 10;
+				CFbuf++;
+			}
+			rez = A - B;
+			if(CF)
+			{
+				if(!rez)
 				{
 					rez += 10;
 					CFbuf++;
 				}
 				rez -= CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
 			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			new_int = new bigInt(new_Integer + i);
-			free(new_Integer);
-			return new_int;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
-		else
+		for(; i >= 0; i--, k--)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = size - 1, j = integer->size - 1, k = new_size - 1; j >= 0; i--, j--, k--)
+			if(great == 2)	A = atoi(Integer[j]);
+			else A = atoi(integer->Integer[j]);
+			CFbuf = 0;
+			rez = A;
+			if(rez < CF)
 			{
-				int A = atoi(Integer[i]);
-				int B = atoi(integer->Integer[j]);
-				CFbuf = 0;
-				if(A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				rez += 10;
+				CFbuf++;
 			}
-			for(; i >= 0; i--, k--)
-			{
-				int A = atoi(Integer[i]);
-				CFbuf = 0;
-				if(A < CF)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			new_int = new bigInt(new_Integer + i);
-			free(new_Integer);
-			return new_int;
+			rez -= CF;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
+		if(CF)
+			new_Integer[k--] = '1';
+		if(new_Sign)
+			new_Integer[k--] = '-';
+			i = 0;
+		while(new_Integer[i] == -51)
+			i++;
+		new_int = new bigInt(new_Integer + i);
+		free(new_Integer);
+		return new_int;
 	}
 	return NULL;
 }
@@ -867,275 +777,191 @@ void bigInt::SummaryS(bigInt* integer)
 	new_Integer[new_size] = 0;
 	if(Sign == integer->Sign)
 	{
+		int rez, i, j, k, CF = 0, A, B;
 		if(great == 1)
 		{
-			int rez, i, j, k, CF = 0;
-			for(i = integer->size - 1, j = size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
-			{
-				int A = atoi(Integer[j]);
-				int B = atoi(integer->Integer[i]);
-				rez = A + B + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			for(; j >= 0; j--, k--)
-			{
-				int A = atoi(Integer[j]);
-				rez = A + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			Update(new_Integer+i);
-			free(new_Integer);
-			return;
+			i = integer->size - 1;
+			j = size - 1;
 		}
 		else
 		{
-			int rez, i, j, k, CF = 0;
-			for(i = size - 1, j = integer->size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
-			{
-				int A = atoi(integer->Integer[j]);
-				int B = atoi(Integer[i]);
-				rez = A + B + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			for(; j >= 0; j--, k--)
-			{
-				int A = atoi(integer->Integer[j]);
-				rez = A + CF;
-				CF = rez / 10;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			Update(new_Integer + i);
-			free(new_Integer);
-			return;
+			j = integer->size - 1;
+			i = size - 1;
 		}
+		for(k = new_size - 1; i >= 0; i--, j--, k--)
+		{
+			if(great == 1)
+			{
+				A = atoi(Integer[j]);
+				B = atoi(integer->Integer[i]);
+			}
+			else
+			{
+				A = atoi(integer->Integer[j]);
+				B = atoi(Integer[i]);
+			}
+			rez = A + B + CF;
+			CF = rez / 10;
+			new_Integer[k] = itoa(rez%10);
+		}
+		for(; j >= 0; j--, k--)
+		{
+			if(great == 1)	A = atoi(Integer[j]);
+			else A = atoi(integer->Integer[j]);
+			rez = A + CF;
+			CF = rez / 10;
+			new_Integer[k] = itoa(rez%10);
+		}
+		if(CF)
+			new_Integer[k--] = '1';
+		if(Sign)
+			new_Integer[k--] = '-';
+		i = 0;
+		while(new_Integer[i] == -51)
+				i++;
+		Update(new_Integer+i);
+		free(new_Integer);
+		return;
 	}
 	if(!Sign)//+(1)-(2) 1 - this
 	{
+		int rez, CFbuf, i, j, k, CF = 0, A, B;
 		if(great == 1)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = integer->size - 1, j = size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
+			i = integer->size - 1;
+			j = size - 1;
+		}
+		else
+		{
+			j = integer->size - 1;
+			i = size - 1;
+		}
+		for(k = new_size - 1; i >= 0; i--, j--, k--)
+		{
+			if(great == 1)
 			{
-				int A = atoi(Integer[j]);
-				int B = atoi(integer->Integer[i]);
-				CFbuf = 0;
-				if (A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				A = atoi(Integer[j]);
+				B = atoi(integer->Integer[i]);
 			}
-			for(; j >= 0; j--, k--)
+			else
 			{
-				int A = atoi(Integer[j]);
-				CFbuf = 0;
-				rez = A;
-				if(rez < CF)
+				A = atoi(integer->Integer[j]);
+				B = atoi(Integer[i]);
+			}
+			CFbuf = 0;
+			if (A < B)
+			{
+				A += 10;
+				CFbuf++;
+			}
+			rez = A - B;
+			if(CF)
+			{
+				if(!rez)
 				{
 					rez += 10;
 					CFbuf++;
 				}
 				rez -= CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
 			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			Update(new_Integer + i);
-			free(new_Integer);
-			return;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
-		else
+		for(; j >= 0; j--, k--)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = size - 1, j = integer->size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
+			if(great == 1)	A = atoi(Integer[j]);
+			else A = atoi(integer->Integer[j]);
+			CFbuf = 0;
+			rez = A;
+			if(rez < CF)
 			{
-				int A = atoi(integer->Integer[j]);
-				int B = atoi(Integer[i]);
-				CFbuf = 0;
-				if(A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				rez += 10;
+				CFbuf++;
 			}
-			for(; j >= 0; j--, k--)
-			{
-				int A = atoi(integer->Integer[j]);
-				CFbuf = 0;
-				rez = A;
-				if(rez < CF)
-				{
-					rez +=10;
-					CFbuf++;
-				}
-				rez -= CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			Update(new_Integer + i);
-			free(new_Integer);
-			return;
+			rez -= CF;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
+		if(CF)
+			new_Integer[k--] = '1';
+		if(new_Sign)
+			new_Integer[k--] = '-';
+					i = 0;
+		while(new_Integer[i] == -51)
+			i++;
+		Update(new_Integer + i);
+		free(new_Integer);
+		return;
 	}
 	else//+(2)-(1) 1 - this
 	{
+		int rez, CFbuf, i, j, k, CF = 0, A, B;
 		if(great == 2)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = integer->size - 1, j = size - 1, k = new_size - 1; i >= 0; i--, j--, k--)
+			i = integer->size - 1;
+			j = size - 1;
+		}
+		else
+		{
+			j = integer->size - 1;
+			i = size - 1;
+		}
+		for(k = new_size - 1; i >= 0; i--, j--, k--)
+		{
+			if(great == 2)
 			{
-				int A = atoi(integer->Integer[i]);
-				int B = atoi(Integer[j]);
-				CFbuf = 0;
-				if(A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				A = atoi(integer->Integer[i]);
+				B = atoi(Integer[j]);
 			}
-			for(; j >= 0; j--, k--)
+			else
 			{
-				int A = atoi(Integer[j]);
-				CFbuf = 0;
-				rez = A;
-				if(rez < CF)
+				A = atoi(Integer[i]);
+				B = atoi(integer->Integer[j]);
+			}
+			CFbuf = 0;
+			if(A < B)
+			{
+				A += 10;
+				CFbuf++;
+			}
+			rez = A - B;
+			if(CF)
+			{
+				if(!rez)
 				{
 					rez += 10;
 					CFbuf++;
 				}
 				rez -= CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
 			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			Update(new_Integer + i);
-			free(new_Integer);
-			return;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
-		else
+		for(; j >= 0; j--, k--)
 		{
-			int rez, CFbuf, i, j, k, CF = 0;
-			for(i = size - 1, j = integer->size - 1, k = new_size - 1; j >= 0; i--, j--, k--)
+			if(great ==2)	A = atoi(Integer[j]);
+			else A = atoi(integer->Integer[j]);
+			CFbuf = 0;
+			rez = A;
+			if(rez < CF)
 			{
-				int A = atoi(Integer[i]);
-				int B = atoi(integer->Integer[j]);
-				CFbuf = 0;
-				if(A < B)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - B;
-				if(CF)
-				{
-					if(!rez)
-					{
-						rez += 10;
-						CFbuf++;
-					}
-					rez -= CF;
-				}
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
+				rez += 10;
+				CFbuf++;
 			}
-			for(; i >= 0; i--, k--)
-			{
-				int A = atoi(Integer[i]);
-				CFbuf = 0;
-				if(A < CF)
-				{
-					A += 10;
-					CFbuf++;
-				}
-				rez = A - CF;
-				CF = CFbuf;
-				new_Integer[k] = itoa(rez%10);
-			}
-			if(CF)
-				new_Integer[k--] = '1';
-			if(new_Sign)
-				new_Integer[k--] = '-';
-			i = 0;
-			while(new_Integer[i] == -51)
-				i++;
-			Update(new_Integer + i);
-			free(new_Integer);
-			return;
+			rez -= CF;
+			CF = CFbuf;
+			new_Integer[k] = itoa(rez%10);
 		}
+		if(CF)
+			new_Integer[k--] = '1';
+		if(new_Sign)
+			new_Integer[k--] = '-';
+					i = 0;
+		while(new_Integer[i] == -51)
+			i++;
+		Update(new_Integer + i);
+		free(new_Integer);
+		return;
 	}	
 }
 
@@ -1164,10 +990,7 @@ bigInt* bigInt::Multiplication(bigInt* integer)
 	if(!integer)
 		return NULL;
 	if(!integer->size || !size)
-	{
-		bigInt *zero = new bigInt(0);
-		return zero;
-	}
+		return &bigInt("0");
 	bool new_Sign;
 	bigInt *buf;
 	char *new_Integer;
@@ -1188,7 +1011,7 @@ bigInt* bigInt::Multiplication(bigInt* integer)
 		buf = new bigInt(this);
 		cur = new bigInt(integer);
 	}
-	new_int = new bigInt(0);
+	new_int = new bigInt("0");
 	//////////////////////////////
 	int rez, CF= 0, i, j, k, p, m, cur_size;
 	for(i = cur->size - 1, p = 0; i >= 0; i--, p++)
@@ -1226,9 +1049,7 @@ bigInt* bigInt::Multiplication(bigInt* integer)
 		m = 0;
 		while(new_Integer[m] == -51)
 			m++;
-		bigInt *cur_int = new bigInt(new_Integer+m);
-		new_int->SummaryS(cur_int);
-		free(cur_int->Integer);
+		new_int->SummaryS(&bigInt(new_Integer+m));
 		free(new_Integer);
 		CF = 0;
 	}
@@ -1315,10 +1136,8 @@ void bigInt::MultiplicationS(bigInt* integer)
 		m = 0;
 		while(new_Integer[m] == -51)
 			m++;
-		bigInt *cur_int = new bigInt(new_Integer+m);
-		new_int->SummaryS(cur_int);
+		new_int->SummaryS(&bigInt(new_Integer+m));
 		CF = 0;
-		free(cur_int);
 		free(new_Integer);
 	}
 	/////////////////
@@ -1346,15 +1165,9 @@ bigInt* bigInt::Degreed(bigInt* integer)
 	if(!integer)
 		return NULL;
 	if(!integer->size)
-	{
-		bigInt *one = new bigInt(1);
-		return one;
-	}
+		return &bigInt("1");
 	if(!size)
-	{
-		bigInt *zero = new bigInt(0);
-		return zero;
-	}
+		return &bigInt("0");
 	bool new_sign;
 	if(atoi(integer->Integer[size-1])%2)
 		new_sign = Sign;
@@ -1418,10 +1231,7 @@ bigInt* bigInt::Division(bigInt* integer)
 	if(!integer->size)
 		return NULL;
 	if(!size)
-	{
-		bigInt *zero = new bigInt(0);
-		return zero;
-	}
+		return &bigInt("0");
 	bool new_Sign, end_div = false, good_div, good_devidend;
 	bigInt *devidend, *devider, *new_int, *buf = new bigInt("0"), *buf_devider, *req;
 	if (Sign == integer->Sign)
@@ -1533,10 +1343,7 @@ bigInt* bigInt::Modulation(bigInt* integer)
 	if(!integer)
 		return NULL;
 	if(!integer->size || !size)
-	{
-		bigInt *zero = new bigInt(0);
-		return zero;
-	}
+		return &bigInt("0");
 	bool new_Sign, end_div = false, good_div, good_devidend;
 	bigInt *devidend, *devider, *new_int, *buf = new bigInt("0"), *buf_devider, *req;
 	if (Sign == integer->Sign)
