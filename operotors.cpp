@@ -1,6 +1,6 @@
 #include "bigInt.h"
 
-const bigInt& bigInt::operator=(const bigInt& integer)
+const BigInt& BigInt::operator=(const BigInt& integer)
 {
 	Update(integer.Integer);
 	Sign = integer.Sign;
@@ -8,131 +8,131 @@ const bigInt& bigInt::operator=(const bigInt& integer)
 	return *this;
 }
 
-bigInt& bigInt::operator+(const bigInt& integer)
+BigInt& BigInt::operator+(const BigInt& integer)
 {
-	bigInt *rez = new bigInt(this);
-	bigInt *buf = new bigInt(integer);
+	BigInt *rez = new BigInt(this);
+	BigInt *buf = new BigInt(integer);
 	return *rez->Summary(buf);
 }
 
-bigInt& bigInt::operator-(const bigInt& integer)
+BigInt& BigInt::operator-(const BigInt& integer)
 {
-	bigInt *rez = new bigInt(this);
-	bigInt *buf = new bigInt(integer);
+	BigInt *rez = new BigInt(this);
+	BigInt *buf = new BigInt(integer);
 	return *rez->Subtraction(buf);
 }
 
-bigInt& bigInt::operator-()
+BigInt& BigInt::operator-()
 {
 	this->Sign = !this->Sign;
 	return *this;
 }
 
-bigInt& bigInt::operator++(int)
+BigInt& BigInt::operator++(int)
 {
-	bigInt one = "1", *Oldvar;
-	Oldvar = new bigInt(this);
+	BigInt one = "1", *Oldvar;
+	Oldvar = new BigInt(this);
 	this->SummaryS(&one);
 	return *Oldvar;
 }
 
-bigInt& bigInt::operator++()
+BigInt& BigInt::operator++()
 {
-	bigInt one = "1";
+	BigInt one = "1";
 	this->SummaryS(&one);
 	return *this;
 }
 
-bigInt& bigInt::operator--(int)
+BigInt& BigInt::operator--(int)
 {
-	bigInt one = "1", *Oldvar;
-	Oldvar = new bigInt(this);
+	BigInt one = "1", *Oldvar;
+	Oldvar = new BigInt(this);
 	this->SubtractionS(&one);
 	return *Oldvar;
 }
 
-bigInt& bigInt::operator--()
+BigInt& BigInt::operator--()
 {
-	bigInt one = "1";
+	BigInt one = "1";
 	this->SubtractionS(&one);
 	return *this;
 }
 
-bigInt& bigInt::operator+=(const bigInt& integer)
+BigInt& BigInt::operator+=(const BigInt& integer)
 {
-	bigInt *buf = new bigInt(integer);
+	BigInt *buf = new BigInt(integer);
 	this->SummaryS(buf);
 	return *this;
 }
 
-bigInt& bigInt::operator-=(const bigInt& integer)
+BigInt& BigInt::operator-=(const BigInt& integer)
 {
-	bigInt *buf = new bigInt(integer);
+	BigInt *buf = new BigInt(integer);
 	this->SubtractionS(buf);
 	return *this;
 }
 
-bigInt& bigInt::operator*(const bigInt& integer)
+BigInt& BigInt::operator*(const BigInt& integer)
 {
-	bigInt *rez = new bigInt(this);
-	bigInt *buf = new bigInt(integer);
+	BigInt *rez = new BigInt(this);
+	BigInt *buf = new BigInt(integer);
 	rez->MultiplicationS(buf);
 	return *rez;
 }
 
-bigInt& bigInt::operator*=(const bigInt& integer)
+BigInt& BigInt::operator*=(const BigInt& integer)
 {
-	bigInt *buf = new bigInt(integer);
+	BigInt *buf = new BigInt(integer);
 	this->MultiplicationS(buf);
 	return *this;
 }
 
-bigInt& bigInt::operator/(const bigInt& integer)
+BigInt& BigInt::operator/(const BigInt& integer)
 {
-	bigInt *rez = new bigInt(this);
-	bigInt *buf = new bigInt(integer);
+	BigInt *rez = new BigInt(this);
+	BigInt *buf = new BigInt(integer);
 	rez->DivisionS(buf);
 	return *rez;
 }
 
-bigInt& bigInt::operator/=(const bigInt& integer)
+BigInt& BigInt::operator/=(const BigInt& integer)
 {
-	bigInt *buf = new bigInt(integer);
+	BigInt *buf = new BigInt(integer);
 	this->DivisionS(buf);
 	return *this;
 }
 
-bigInt& bigInt::operator%(const bigInt& integer)
+BigInt& BigInt::operator%(const BigInt& integer)
 {
-	bigInt *rez = new bigInt(this);
-	bigInt *buf = new bigInt(integer);
+	BigInt *rez = new BigInt(this);
+	BigInt *buf = new BigInt(integer);
 	rez->ModulationS(buf);
 	return *rez;
 }
 
-bigInt& bigInt::operator%=(const bigInt& integer)
+BigInt& BigInt::operator%=(const BigInt& integer)
 {
-	bigInt *buf = new bigInt(integer);
+	BigInt *buf = new BigInt(integer);
 	this->ModulationS(buf);
 	return *this;
 }
 
-bigInt& bigInt::operator^(const bigInt& integer)
+BigInt& BigInt::operator^(const BigInt& integer)
 {
-	bigInt *rez = new bigInt(this);
-	bigInt *buf = new bigInt(integer);
+	BigInt *rez = new BigInt(this);
+	BigInt *buf = new BigInt(integer);
 	rez->DegreedS(buf);
 	return *rez;
 }
 
-bigInt& bigInt::operator^=(const bigInt& integer)
+BigInt& BigInt::operator^=(const BigInt& integer)
 {
-	bigInt *buf = new bigInt(integer);
+	BigInt *buf = new BigInt(integer);
 	this->DegreedS(buf);
 	return *this;
 }
 
-const bool bigInt::operator==(const bigInt& integer)
+const bool BigInt::operator==(const BigInt& integer)
 {
 	if (Sign == integer.Sign) // знак
 		if (size == integer.size) // кол-во разрядов
@@ -156,7 +156,7 @@ const bool bigInt::operator==(const bigInt& integer)
 	return false;
 }
 
-const bool bigInt::operator!=(const bigInt& integer)
+const bool BigInt::operator!=(const BigInt& integer)
 {
 	if (Sign == integer.Sign) // знак
 		if (size == integer.size) // кол-во разрядов
@@ -180,7 +180,7 @@ const bool bigInt::operator!=(const bigInt& integer)
 	return true;
 }
 
-const bool bigInt::operator<(const bigInt& integer) //-149 <-127 но не работает...
+const bool BigInt::operator<(const BigInt& integer) //-149 <-127 но не работает...
 {
 	if(Sign == true && integer.Sign == false)
 		return true;
@@ -207,7 +207,7 @@ const bool bigInt::operator<(const bigInt& integer) //-149 <-127 но не ра�
 	return false;
 }
 		
-const bool bigInt::operator>(const bigInt& integer)
+const bool BigInt::operator>(const BigInt& integer)
 {
 	if(Sign == false && integer.Sign == true)
 		return true;
@@ -234,7 +234,7 @@ const bool bigInt::operator>(const bigInt& integer)
 	return false;
 }
 
-const bool bigInt::operator<=(const bigInt& integer)
+const bool BigInt::operator<=(const BigInt& integer)
 {
 	if(Sign == true && integer.Sign == false)
 		return true;
@@ -261,7 +261,7 @@ const bool bigInt::operator<=(const bigInt& integer)
 	return true;
 }
 
-const bool bigInt::operator>=(const bigInt& integer)
+const bool BigInt::operator>=(const BigInt& integer)
 {
 	if(Sign == false && integer.Sign == true)
 		return true;
@@ -288,35 +288,35 @@ const bool bigInt::operator>=(const bigInt& integer)
 	return true;
 }
 
-std::istream &operator>>(std::istream &in, bigInt &integer)
+std::istream &operator>>(std::istream &_in, BigInt &integer)
 {
 	char buf, *buffer;
 	integer.size = 0;
-	in.get(buf);
+	_in.get(buf);
 	if(buf == '-')
 	{
 		integer.Sign = true;
-		in.get(buf);
+		_in.get(buf);
 	}
 	else if(buf == '+')
 	{
 		integer.Sign = false;
-		in.get(buf);
+		_in.get(buf);
 	}
 	else if(isdigit(buf))
 		integer.Sign = false;
 	else
 	{
-		std::cout<<"error input stream!\n";
-		return in;
+		throw std::invalid_argument("Error input stream.\n");
+		return _in;
 	}
 	int i = 0;
 	while(buf == '0' && isdigit(buf))
 	{
-		in.get(buf);
+		_in.get(buf);
 	}
 	integer.Integer = (char*)malloc(0);
-	while(!in.eof() && isdigit(buf))
+	while(!_in.eof() && isdigit(buf))
 	{
 		integer.size++;
 		buffer = (char*)malloc(integer.size+1);
@@ -327,24 +327,24 @@ std::istream &operator>>(std::istream &in, bigInt &integer)
 		memcpy(integer.Integer, buffer, integer.size);
 		free(buffer);
 		i++;
-		in.get(buf);
+		_in.get(buf);
 	}
 	integer.Integer[i] = 0;
-	return in;
+	return _in;
 }
 
-std::ostream &operator<<(std::ostream &out, bigInt &integer)
+std::ostream &operator<<(std::ostream &_out, BigInt &integer)
 {
 	if(!&integer)
-		return out;
+		return _out;
 	if(!integer.Integer || !integer.size)
 	{
-		out<<'0';
-		return out;
+		_out<<'0';
+		return _out;
 	}
 	if(integer.Sign)
-		out<<'-';
+		_out<<'-';
 	for(int i = 0; i < integer.size; i++)
-		out<<integer.Integer[i];
-	return out;
+		_out<<integer.Integer[i];
+	return _out;
 }
