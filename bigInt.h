@@ -2,100 +2,98 @@
 #include <iostream>
 #include <malloc.h>
 #include <cstring>
-
-class bigInt
+#include <string.h>
+#include <stdexcept>
+class BigInt
 {
 	char* Integer;
 	bool Sign; //false - '+'; true - '-'
 	int size;
 	void Update(char *integer);
 public:
-	bigInt();
-	bigInt(char *FName, bool Binary);
-	bigInt(int integer);
-	bigInt(char *integer);
-	bigInt(bigInt *integer);
-	bigInt* BinaryRead(char *FName);
-	bigInt* TextRead(char *FName);
+	BigInt(char *integer);
+	BigInt(char *FName, bool Binary);
+	BigInt();
+	BigInt(int integer);
+	BigInt(BigInt *integer);
+	BigInt* BinaryRead(char *FName);
+	BigInt* TextRead(char *FName);
 	void BinaryWrite(char *FName);
 	void TextWrite(char *FName);
-	friend void BinaryWrite(bigInt *integer, char *FName);
-	friend void TextWrite(bigInt *integer, char *FName);
+	friend void BinaryWrite(BigInt *integer, char *FName);
+	friend void TextWrite(BigInt *integer, char *FName);
 	//
-	bigInt* Rezult(char* intager);
-	bigInt* Summary(bigInt* integer);
-	bigInt* Subtraction(bigInt* integer);
-	bigInt* Multiplication(bigInt* integer);
-	bigInt* Degreed(bigInt* integer);
-	bigInt* Division(bigInt* integer);
-	bigInt* Modulation(bigInt* integer);
-	bigInt* DegreeToTen(bigInt* integer);
-	void SummaryS(bigInt* integer);
-	void SubtractionS(bigInt* integer);
-	void MultiplicationS(bigInt* integer);
-	void DegreedS(bigInt *integer);
-	void DivisionS(bigInt* integer);
-	void ModulationS(bigInt* integer);
+	BigInt* Summary(BigInt* integer);
+	BigInt* Subtraction(BigInt* integer);
+	BigInt* Multiplication(BigInt* integer);
+	BigInt* Degreed(BigInt* integer);
+	BigInt* Division(BigInt* integer);
+	BigInt* Modulation(BigInt* integer);
+	BigInt* DegreeToTen(BigInt* integer);
+	void SummaryS(BigInt* integer);
+	void SubtractionS(BigInt* integer);
+	void MultiplicationS(BigInt* integer);
+	void DegreedS(BigInt *integer);
+	void DivisionS(BigInt* integer);
+	void ModulationS(BigInt* integer);
 	void Clear();
-
+	char* Print();
+	void hello();
 	//унарный =
-	const bigInt & operator=(const bigInt& integer);	
+	const BigInt & operator=(const BigInt& integer);	
 	//бинарный +
-	bigInt& operator+(const bigInt& integer);	
+	BigInt& operator+(const BigInt& integer);	
 	//унарный -
-	bigInt& operator-();
+	BigInt& operator-();
 	//бинарный -
-	bigInt& operator-(const bigInt& integer);
+	BigInt& operator-(const BigInt& integer);
 	//префиксна инкремент
-	bigInt& operator++(); // косяк SumS
+	BigInt& operator++(); // косяк SumS
 	// потфиксная
-	bigInt& operator++(int);
+	BigInt& operator++(int);
 	//префиксна декремент
-	bigInt& operator--();
+	BigInt& operator--();
 	// потфиксная
-	bigInt& operator--(int);
+	BigInt& operator--(int);
 	//бинарный +=
-	bigInt& operator+=(const bigInt& integer);
+	BigInt& operator+=(const BigInt& integer);
 	//бинарный -=
-	bigInt& operator-=(const bigInt& integer);
+	BigInt& operator-=(const BigInt& integer);
 	//бинарный *
-	bigInt& operator*(const bigInt& integer);
+	BigInt& operator*(const BigInt& integer);
 	//бинарный *=
-	bigInt& operator*=(const bigInt& integer);
+	BigInt& operator*=(const BigInt& integer);
 	//бинарный /
-	bigInt& operator/(const bigInt& integer);
+	BigInt& operator/(const BigInt& integer);
 	//бинарный /=
-	bigInt& operator/=(const bigInt& integer);
+	BigInt& operator/=(const BigInt& integer);
 	//бинарный %
-	bigInt& operator%(const bigInt& integer);
+	BigInt& operator%(const BigInt& integer);
 	//бинарный %=
-	bigInt& operator%=(const bigInt& integer);
+	BigInt& operator%=(const BigInt& integer);
 	//бинарный ^
-	 bigInt& operator^(const bigInt& integer);
+	 BigInt& operator^(const BigInt& integer);
 	//бинарный ^=
-	bigInt& operator^=(const bigInt& integer);
+	BigInt& operator^=(const BigInt& integer);
 	//бинарный ==
-	const bool operator==(const bigInt& integer);
+	const bool operator==(const BigInt& integer);
 	//бинарный !=
-	const bool operator!=(const bigInt& integer);
+	const bool operator!=(const BigInt& integer);
 	//бинарный <
-	const bool operator<(const bigInt& integer);
+	const bool operator<(const BigInt& integer);
 	//бинарный >
-	const bool operator>(const bigInt& integer);
+	const bool operator>(const BigInt& integer);
 	//бинарный <=
-	const bool operator<=(const bigInt& integer);
+	const bool operator<=(const BigInt& integer);
 	//бинарный >=
-	const bool operator>=(const bigInt& integer);
-
-	friend std::istream &operator>>(std::istream& in, bigInt& integer);
-
-	friend std::ostream &operator<<(std::ostream& out, bigInt& integer);
-
-	~bigInt();
+	const bool operator>=(const BigInt& integer);
+	friend std::istream &operator>>(std::istream& _in, BigInt& integer);
+	friend std::ostream &operator<<(std::ostream& _out, BigInt& integer);
+	~BigInt();
 };
 
-void BinaryWrite(bigInt *integer, char *FName);
-void TextWrite(bigInt *integer, char *FName);
+void BinaryWrite(BigInt *integer, char *FName);
+void TextWrite(BigInt *integer, char *FName);
 int atoi(char ch);
 char itoa(int i);
 char* shiftRight(char *integer, int p);
