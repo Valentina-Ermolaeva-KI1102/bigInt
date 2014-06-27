@@ -73,8 +73,9 @@ char* shiftRight(char *integer, int p)//сдвиг строки на 1 разр�
 		i++;
 	while(integer[j] == -51 )
 		j++;
-	memcpy(integer, integer+p, i - p);
-	memset(integer+(i-p), '0', p);
+	size_t a = i - p, b = p;
+	memcpy((void*)integer, (void*)(integer+p), a);
+	memset((void*)(integer+(i-p)), '0', b);
 	return integer;
 }
 
@@ -83,7 +84,8 @@ char* divisionInTwo(char* integer)//Деление числа в строке н
 	int size = 0, beg, it, cf = 0;
 	while(integer[size] != '\0')
 		size++;
-	char *rez = (char*)malloc(size+1);
+	size_t a = size + 1;
+	char *rez = (char*)malloc(a);
 	beg = it = 0;
 	if(beg < 0)
 		return NULL;
@@ -107,7 +109,7 @@ BigInt::BigInt()
 
 BigInt::BigInt(char *integer)
 {
-	
+
 	Integer = NULL;
 	Sign = false;
 	size = 0;
@@ -138,8 +140,9 @@ BigInt::BigInt(char *integer)
 	size = size - anti_size;
 	if(!size)
 		return;
-	Integer = (char*)malloc(size+1);
-	memcpy(Integer, integer+j, size);
+	size_t a = size + 1, b = size;
+	Integer = (char*)malloc(a);
+	memcpy((void*)Integer, (void*)(integer+j), b);
 	Integer[size] = 0;
 }
 
@@ -154,9 +157,10 @@ BigInt::BigInt(int integer)
 		Sign = true;
 	int int_buf = integer;
 	do 
-		size++;
+	size++;
 	while(int_buf /= 10);
-	Integer = (char*)malloc(size+1);
+	size_t a = size + 1;
+	Integer = (char*)malloc(a);
 	int i = size - 1;
 	while(integer)
 	{
@@ -214,13 +218,14 @@ BigInt::BigInt(char *FName, bool Binary)
 		}
 		if(size)
 		{
-			Integer = (char*)malloc(size+1);
+			size_t a = size + 1;
+			Integer = (char*)malloc(a);
 			while(!in.eof())
 			{
 				if(!isdigit(buf))
 				{
 					throw std::invalid_argument("Error in input string.\n");
-					free(Integer);
+					free((void*)Integer);
 					size = 0;
 					Sign = false;
 					Integer = NULL;
@@ -270,7 +275,8 @@ BigInt::BigInt(char *FName, bool Binary)
 		}
 		if(size)
 		{
-			Integer = (char*)malloc(size+1);
+			size_t a = size + 1;
+			Integer = (char*)malloc(a);
 			while(!in.eof())
 			{
 				if(!isdigit(buf))
@@ -292,8 +298,9 @@ BigInt::BigInt(BigInt *integer)
 {
 	size = integer->size;
 	Sign = integer->Sign;
-	Integer = (char*)malloc(size+1);
-	memcpy(Integer, integer->Integer, size);
+	size_t a = size + 1, b = size;
+	Integer = (char*)malloc(a);
+	memcpy((void*)Integer, (void*)integer->Integer, b);
 	Integer[size] = 0;
 }
 
@@ -330,8 +337,9 @@ void BigInt::Update(char* integer)
 	size = size - anti_size;
 	if(!size)
 		return;
-	Integer = (char*)malloc(size+1);
-	memcpy(Integer, integer+j, size);
+	size_t a = size + 1, b = size;
+	Integer = (char*)malloc(a);
+	memcpy(Integer, integer+j, b);
 	Integer[size] = 0;
 }
 
@@ -378,14 +386,15 @@ BigInt* BigInt::BinaryRead(char *FName)
 		in>>buf;
 		size--;
 	}
-	free(Integer);
-	Integer = (char*)malloc(size+1);
+	free((void*)Integer);
+	size_t a =size + 1;
+	Integer = (char*)malloc(a);
 	while(!in.eof())
 	{
 		if(!isdigit(buf))
 		{
 			throw std::invalid_argument("Error in input string.\n");
-			free(Integer);
+			free((void*)Integer);
 			Integer = NULL;
 			return NULL;
 		}
@@ -441,8 +450,9 @@ BigInt* BigInt::TextRead(char *FName)
 		in>>buf;
 		size--;
 	}
-	free(Integer);
-	Integer = (char*)malloc(size+1);
+	free((void*)Integer);
+	size_t a = size + 1;
+	Integer = (char*)malloc(a);
 	while(!in.eof())
 	{
 		if(!isdigit(buf))
@@ -533,8 +543,9 @@ BigInt* BigInt::Summary(BigInt* integer)
 	integer->Sign = Second_Sign;
 	if(new_Sign)
 		new_size++;
-	new_Integer = (char*)malloc(new_size+1);
-	memset(new_Integer, -51, new_size - 1);
+	size_t a = new_size + 1, b = new_size - 1;
+	new_Integer = (char*)malloc(a);
+	memset((void*)new_Integer, -51, b);
 	new_Integer[new_size] = 0;
 	if(Sign == integer->Sign)
 	{
@@ -581,7 +592,7 @@ BigInt* BigInt::Summary(BigInt* integer)
 		while(new_Integer[i] == -51)
 			i++;
 		new_int = new BigInt(new_Integer + i);
-		free(new_Integer);
+		free((void*)new_Integer);
 		return new_int;
 	}
 	if(!Sign)//+(1)-(2) 1 - this
@@ -647,11 +658,11 @@ BigInt* BigInt::Summary(BigInt* integer)
 			new_Integer[k--] = '1';
 		if(new_Sign)
 			new_Integer[k--] = '-';
-					i = 0;
+		i = 0;
 		while(new_Integer[i] == -51)
 			i++;
 		new_int = new BigInt(new_Integer + i);
-		free(new_Integer);
+		free((void*)new_Integer);
 		return new_int;
 	}
 	else//+(2)-(1) 1 - this
@@ -717,11 +728,11 @@ BigInt* BigInt::Summary(BigInt* integer)
 			new_Integer[k--] = '1';
 		if(new_Sign)
 			new_Integer[k--] = '-';
-			i = 0;
+		i = 0;
 		while(new_Integer[i] == -51)
 			i++;
 		new_int = new BigInt(new_Integer + i);
-		free(new_Integer);
+		free((void*)new_Integer);
 		return new_int;
 	}
 	return NULL;
@@ -762,7 +773,8 @@ void BigInt::SummaryS(BigInt* integer)
 	integer->Sign = Second_Sign;
 	if(new_Sign)
 		new_size++;
-	new_Integer = (char*)malloc(new_size+1);
+	size_t a = new_size + 1;
+	new_Integer = (char*)malloc(a);
 	memset(new_Integer, -51, new_size - 1);
 	new_Integer[new_size] = 0;
 	if(Sign == integer->Sign)
@@ -808,9 +820,9 @@ void BigInt::SummaryS(BigInt* integer)
 			new_Integer[k--] = '-';
 		i = 0;
 		while(new_Integer[i] == -51)
-				i++;
+			i++;
 		Update(new_Integer+i);
-		free(new_Integer);
+		free((void*)new_Integer);
 		return;
 	}
 	if(!Sign)//+(1)-(2) 1 - this
@@ -876,11 +888,11 @@ void BigInt::SummaryS(BigInt* integer)
 			new_Integer[k--] = '1';
 		if(new_Sign)
 			new_Integer[k--] = '-';
-					i = 0;
+		i = 0;
 		while(new_Integer[i] == -51)
 			i++;
 		Update(new_Integer + i);
-		free(new_Integer);
+		free((void*)new_Integer);
 		return;
 	}
 	else//+(2)-(1) 1 - this
@@ -946,11 +958,11 @@ void BigInt::SummaryS(BigInt* integer)
 			new_Integer[k--] = '1';
 		if(new_Sign)
 			new_Integer[k--] = '-';
-					i = 0;
+		i = 0;
 		while(new_Integer[i] == -51)
 			i++;
 		Update(new_Integer + i);
-		free(new_Integer);
+		free((void*)new_Integer);
 		return;
 	}	
 }
@@ -1014,14 +1026,16 @@ BigInt* BigInt::Multiplication(BigInt* integer)
 			continue;
 		j = buf->size - 1;
 		cur_size = buf->size + p + 1;
-		new_Integer = (char*)malloc(cur_size+1);
-		memset(new_Integer, -51, cur_size);
+		size_t a = cur_size + 1, b = cur_size;
+		new_Integer = (char*)malloc(a);
+		memset((void*)new_Integer, -51, b);
 		new_Integer[cur_size] = 0;
 		for(k = cur_size-1; j >=0; j--, k--)
 		{
 			if(A == 1)
 			{
-				memcpy(new_Integer + (cur_size - buf->size), buf->Integer, buf->size);
+				size_t c = buf->size;
+				memcpy((void*)(new_Integer + (cur_size - buf->size)), (void*)buf->Integer, c);
 				k = cur_size - buf->size + 1;
 				break;
 			}
@@ -1044,16 +1058,16 @@ BigInt* BigInt::Multiplication(BigInt* integer)
 			m++;
 		BigInt *new_int_buf = new BigInt(new_Integer+m);
 		new_int->SummaryS(new_int_buf);
-		free(new_int_buf->Integer);
-		free(new_Integer);
+		free((void*)new_int_buf->Integer);
+		free((void*)new_Integer);
 		CF = 0;
 	}
 	/////////////////
 	new_int->Sign = new_Sign;
 	Sign = First_Sign;
 	integer->Sign = Second_Sign;
-	free(buf->Integer);
-	free(cur->Integer);
+	free((void*)buf->Integer);
+	free((void*)cur->Integer);
 	return new_int;
 }
 
@@ -1066,7 +1080,7 @@ void BigInt::MultiplicationS(BigInt* integer)
 	{
 		Sign = false;
 		size = 0;
-		free(Integer);
+		free((void*)Integer);
 		Integer = NULL;
 		return;
 	}
@@ -1100,17 +1114,19 @@ void BigInt::MultiplicationS(BigInt* integer)
 		int A = atoi(cur->Integer[i]);
 		if(!A)
 			continue;
-		
+
 		j = buf->size - 1;
 		cur_size = buf->size + p + 1;
-		new_Integer = (char*)malloc(cur_size+1);
-		memset(new_Integer, -51, cur_size);
+		size_t a = cur_size + 1, b = cur_size;
+		new_Integer = (char*)malloc(a);
+		memset((void*)new_Integer, -51, b);
 		new_Integer[cur_size] = 0;
 		for(k = cur_size-1; j >=0; j--, k--)
 		{
 			if(A == 1)
 			{
-				memcpy(new_Integer + (cur_size - buf->size), buf->Integer, buf->size);
+				size_t c = buf->size;
+				memcpy((void*)(new_Integer + (cur_size - buf->size)), (void*)buf->Integer, c);
 				k = cur_size - buf->size + 1;
 				break;
 			}
@@ -1140,9 +1156,9 @@ void BigInt::MultiplicationS(BigInt* integer)
 	integer->Sign = Second_Sign;
 	Update(new_int->Integer);
 	Sign = new_Sign;
-	free(buf->Integer);
-	free(cur->Integer);
-	free(new_int);
+	free((void*)buf->Integer);
+	free((void*)cur->Integer);
+	free((void*)new_int);
 	return ;
 }
 
@@ -1187,9 +1203,9 @@ BigInt* BigInt::Degreed(BigInt* integer)
 		for(int j = 1; j < atoi(integer->Integer[i]); j++)
 			buf->MultiplicationS(degreeNet[integer->size - 1 - i]);
 		new_int->MultiplicationS(buf);
-		free(buf);
+		free((void*)buf);
 	}
-	free(degreeNet);
+	free((void*)degreeNet);
 	new_int->Sign = new_sign;
 	return new_int;
 }
@@ -1204,7 +1220,7 @@ void BigInt::DegreedS(BigInt *integer)
 	{
 		size = 1;
 		Sign = false;
-		free(Integer);
+		free((void*)Integer);
 		Integer = new char[2];
 		Integer[0] = 1;
 		Integer[1] = '\0';
@@ -1224,11 +1240,11 @@ void BigInt::DegreedS(BigInt *integer)
 		for(int j = 1; j < atoi(integer->Integer[i]); j++)
 			buf->MultiplicationS(degreeNet[integer->size - 1 - i]);
 		new_int->MultiplicationS(buf);
-		free(buf);
+		free((void*)buf);
 	}
-	free(degreeNet);
+	free((void*)degreeNet);
 	this->Update(new_int->Integer);
-	free(new_int);
+	free((void*)new_int);
 }
 
 BigInt* BigInt::Division(BigInt* integer)
@@ -1285,10 +1301,10 @@ BigInt* BigInt::Division(BigInt* integer)
 	Sign = First_Sign;
 	new_int->Sign = new_Sign;
 	req = new BigInt(devidend);
-	free(buf);
-	free(buf_devider);
-	free(devidend);
-	free(req);
+	free((void*)buf);
+	free((void*)buf_devider);
+	free((void*)devidend);
+	free((void*)req);
 	return new_int;
 }
 
@@ -1341,11 +1357,11 @@ void BigInt::DivisionS(BigInt* integer)
 	Sign = new_Sign;
 	req = new BigInt(devidend);
 	new_int->Sign = new_Sign;
-	free(buf);
-	free(buf_devider);
-	free(devidend);
-	free(req);
-	free(new_int);
+	free((void*)buf);
+	free((void*)buf_devider);
+	free((void*)devidend);
+	free((void*)req);
+	free((void*)new_int);
 }
 
 BigInt* BigInt::Modulation(BigInt* integer)
@@ -1399,10 +1415,10 @@ BigInt* BigInt::Modulation(BigInt* integer)
 	integer->Sign = Second_Sign;
 	Sign = First_Sign;
 	req = new BigInt(devidend);
-	free(buf);
-	free(buf_devider);
-	free(devidend);
-	free(new_int);
+	free((void*)buf);
+	free((void*)buf_devider);
+	free((void*)devidend);
+	free((void*)new_int);
 	return req;
 }
 
@@ -1466,17 +1482,17 @@ void BigInt::ModulationS(BigInt* integer)
 	integer->Sign = Second_Sign;
 	Sign = First_Sign;
 	req = new BigInt(devidend);
-	free(buf);
-	free(buf_devider);
-	free(devidend);
+	free((void*)buf);
+	free((void*)buf_devider);
+	free((void*)devidend);
 	Update(req->Integer);
-	free(req);
-	free(new_int);
+	free((void*)req);
+	free((void*)new_int);
 }
 
 void BigInt::Clear()
 {
-	free(Integer);
+	free((void*)Integer);
 	Sign = false;
 	size = 0;
 }
@@ -1489,11 +1505,12 @@ char* BigInt::Print()
 		return "0";
 	}
 	char *str = new char[size + 2];
-	memcpy(str, Integer, size);
+	size_t a = size;
+	memcpy((void*)str, (void*)Integer, a);
 	if(Sign)
 	{
 		str[0] = '-';
-		memcpy(str+1, Integer, size);
+		memcpy((void*)(str+1), (void*)Integer, a);
 		//std::cout<<"-";
 		return str;
 	}
@@ -1508,7 +1525,7 @@ void BigInt::hello()
 
 BigInt::~BigInt()
 {
-	free(Integer);
+	free((void*)Integer);
 	Sign = false;
 	size = 0;
 }
