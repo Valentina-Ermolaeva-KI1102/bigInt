@@ -15,4 +15,4 @@
 %rename(_lmmul) BigInt::operator ^=(const BigInt& integer);
 %rename(_ne) BigInt::operator !=(const BigInt& integer);
 
-%include "bigInt.h"
+%include "bigInt.h" 
