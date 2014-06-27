@@ -153,7 +153,7 @@ const bool BigInt::operator==(const BigInt& integer)
 			}
 			return true;
 		}
-	return false;
+		return false;
 }
 
 const bool BigInt::operator!=(const BigInt& integer)
@@ -177,7 +177,7 @@ const bool BigInt::operator!=(const BigInt& integer)
 			}
 			return false;
 		}
-	return true;
+		return true;
 }
 
 const bool BigInt::operator<(const BigInt& integer) //-149 <-127 но не работает...
@@ -206,7 +206,7 @@ const bool BigInt::operator<(const BigInt& integer) //-149 <-127 но не ра�
 	}
 	return false;
 }
-		
+
 const bool BigInt::operator>(const BigInt& integer)
 {
 	if(Sign == false && integer.Sign == true)
@@ -315,17 +315,19 @@ std::istream &operator>>(std::istream &_in, BigInt &integer)
 	{
 		_in.get(buf);
 	}
-	integer.Integer = (char*)malloc(0);
+	size_t a = 0, b, c, d;
+	integer.Integer = (char*)malloc(a);
 	while(!_in.eof() && isdigit(buf))
 	{
 		integer.size++;
-		buffer = (char*)malloc(integer.size+1);
-		memcpy(buffer, integer.Integer, integer.size-1);
+		b = integer.size + 1; c = integer.size - 1; d = integer.size;
+		buffer = (char*)malloc(b);
+		memcpy((void*)buffer, (void*)integer.Integer, c);
 		buffer[i] = buf;
 		free(integer.Integer);
-		integer.Integer = (char*)malloc(integer.size+1);
-		memcpy(integer.Integer, buffer, integer.size);
-		free(buffer);
+		integer.Integer = (char*)malloc(b);
+		memcpy((void*)integer.Integer, (void*)buffer, d);
+		free((void*)buffer);
 		i++;
 		_in.get(buf);
 	}
