@@ -72,7 +72,7 @@ public:
 	//бинарный %=
 	BigInt& operator%=(const BigInt& integer);
 	//бинарный ^
-	 BigInt& operator^(const BigInt& integer);
+	BigInt& operator^(const BigInt& integer);
 	//бинарный ^=
 	BigInt& operator^=(const BigInt& integer);
 	//бинарный ==
